@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tetthys\Permissions\Contracts;
+namespace Tetthys\Permissions\Core\Contracts;
 
 interface PermissionCache
 {

@@ -6,14 +6,12 @@ return [
     'ttl_seconds' => 300,
     'cache_prefix' => 'permissions:',
 
+    // Storage settings (dynamic table/columns)
     'store' => [
-        // Table storing permission snapshots
         'table' => 'permission_snapshots',
-
-        // Subject identifier column
+        'scope_column' => null,         // e.g. 'org_id' or null
+        'subject_type_column' => 'subject_type',
         'subject_id_column' => 'subject_id',
-
-        // JSON column containing array<int, string>
         'permissions_column' => 'permissions',
     ],
 ];

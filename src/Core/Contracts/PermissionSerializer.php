@@ -2,16 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tetthys\Permissions\Contracts;
+namespace Tetthys\Permissions\Core\Contracts;
 
 interface PermissionSerializer
 {
     /**
-     * Normalize raw permissions for storage/cache:
-     * - remove duplicates
-     * - trim
-     * - stable sort (optional)
-     *
      * @param array<int, string> $permissions
      * @return array<int, string>
      */

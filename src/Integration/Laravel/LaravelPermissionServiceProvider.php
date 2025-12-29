@@ -2,27 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Tetthys\Permissions\Integrations\Laravel;
+namespace Tetthys\Permissions\Integration\Laravel;
 
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 use Illuminate\Support\ServiceProvider;
-use Tetthys\Permissions\Contracts\EventBus;
-use Tetthys\Permissions\Contracts\PermissionCache;
-use Tetthys\Permissions\Contracts\PermissionSerializer;
-use Tetthys\Permissions\Contracts\PermissionStore;
-use Tetthys\Permissions\Integrations\Laravel\Support\LaravelEventBus;
-use Tetthys\Permissions\Integrations\Laravel\Support\LaravelPermissionCache;
-use Tetthys\Permissions\Integrations\Laravel\Support\LaravelPermissionSerializer;
-use Tetthys\Permissions\Integrations\Laravel\Support\LaravelPermissionStore;
-use Tetthys\Permissions\Service\PermissionService;
+use Tetthys\Permissions\Core\Contracts\EventBus;
+use Tetthys\Permissions\Core\Contracts\PermissionCache;
+use Tetthys\Permissions\Core\Contracts\PermissionSerializer;
+use Tetthys\Permissions\Core\Contracts\PermissionStore;
+use Tetthys\Permissions\Core\Service\PermissionService;
+use Tetthys\Permissions\Integration\Laravel\Support\LaravelDbPermissionStore;
+use Tetthys\Permissions\Integration\Laravel\Support\LaravelEventBus;
+use Tetthys\Permissions\Integration\Laravel\Support\LaravelPermissionCache;
+use Tetthys\Permissions\Integration\Laravel\Support\LaravelPermissionSerializer;
 
-final class LaravelPermissionsServiceProvider extends ServiceProvider
+final class LaravelPermissionServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../../../../config/tetthys-permissions.php',
+            __DIR__ . '/../../../config/tetthys-permissions.php',
             'tetthys-permissions'
         );
 
@@ -31,25 +31,25 @@ final class LaravelPermissionsServiceProvider extends ServiceProvider
         $this->app->singleton(PermissionCache::class, function ($app): PermissionCache {
             /** @var CacheRepository $cache */
             $cache = $app->make('cache.store');
-
             return new LaravelPermissionCache($cache);
-        });
-
-        $this->app->singleton(PermissionStore::class, function ($app): PermissionStore {
-            $cfg = (array) config('tetthys-permissions.store', []);
-
-            return new LaravelPermissionStore(
-                table: (string) ($cfg['table'] ?? 'permission_snapshots'),
-                subjectIdColumn: (string) ($cfg['subject_id_column'] ?? 'subject_id'),
-                permissionsColumn: (string) ($cfg['permissions_column'] ?? 'permissions'),
-            );
         });
 
         $this->app->singleton(EventBus::class, function ($app): EventBus {
             /** @var EventDispatcher $events */
             $events = $app->make('events');
-
             return new LaravelEventBus($events);
+        });
+
+        $this->app->singleton(PermissionStore::class, function ($app): PermissionStore {
+            $cfg = (array) config('tetthys-permissions.store', []);
+
+            return new LaravelDbPermissionStore(
+                table: (string) ($cfg['table'] ?? 'permission_snapshots'),
+                scopeColumn: $cfg['scope_column'] !== null ? (string) $cfg['scope_column'] : null,
+                subjectTypeColumn: (string) ($cfg['subject_type_column'] ?? 'subject_type'),
+                subjectIdColumn: (string) ($cfg['subject_id_column'] ?? 'subject_id'),
+                permissionsColumn: (string) ($cfg['permissions_column'] ?? 'permissions'),
+            );
         });
 
         $this->app->singleton(PermissionService::class, function ($app): PermissionService {
@@ -69,7 +69,7 @@ final class LaravelPermissionsServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__ . '/../../../../config/tetthys-permissions.php' => config_path('tetthys-permissions.php'),
+            __DIR__ . '/../../../config/tetthys-permissions.php' => config_path('tetthys-permissions.php'),
         ], 'tetthys-permissions-config');
     }
 }

@@ -2,19 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tetthys\Permissions\Value;
+namespace Tetthys\Permissions\Core\Value;
 
-/**
- * Immutable permission set value object.
- */
 final class PermissionSet
 {
     /**
      * @param array<int, string> $items
      */
-    public function __construct(private array $items)
-    {
-    }
+    public function __construct(private readonly array $items) {}
 
     /**
      * @return array<int, string>
