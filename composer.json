@@ -18,7 +18,10 @@
     "laravel": {
       "providers": [
         "Tetthys\\Permissions\\Integration\\Laravel\\LaravelPermissionServiceProvider"
-      ]
+      ],
+      "aliases": {
+        "Permissions": "Tetthys\\Permissions\\Integration\\Laravel\\Facades\\Permissions"
+      }
     }
   }
 }

@@ -64,6 +64,10 @@ final class LaravelPermissionServiceProvider extends ServiceProvider
                 cachePrefix: (string) ($cfg['cache_prefix'] ?? 'permissions:'),
             );
         });
+
+        $this->app->singleton('tetthys.permissions', function ($app): PermissionService {
+            return $app->make(PermissionService::class);
+        });
     }
 
     public function boot(): void
