@@ -1,10 +1,23 @@
 {
   "name": "tetthys/permissions",
-  "description": "Core contracts for DB(JSON) + cache based permissions",
+  "description": "A flexible permissions management library for PHP applications.",
   "type": "library",
   "license": "MIT",
   "require": {
     "php": "^8.2"
+  },
+  "suggest": {
+    "illuminate/support": "Required for Laravel integration",
+    "illuminate/contracts": "Required for Laravel integration",
+    "illuminate/database": "Required for DB PermissionStore adapter",
+    "illuminate/cache": "Required for Cache PermissionCache adapter"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Tetthys\\Permissions\\Integrations\\Laravel\\LaravelPermissionsServiceProvider"
+      ]
+    }
   },
   "autoload": {
     "psr-4": {
