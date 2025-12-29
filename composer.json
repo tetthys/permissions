@@ -1,9 +1,10 @@
 {
   "name": "tetthys/permissions",
+  "description": "Core contracts for DB(JSON) + cache based permissions",
   "type": "library",
   "license": "MIT",
   "require": {
-    "php": "^8.3"
+    "php": "^8.2"
   },
   "autoload": {
     "psr-4": {
